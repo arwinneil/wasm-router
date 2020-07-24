@@ -1,8 +1,8 @@
 
-import init, { test } from "/pkg/wasm_router.js";
+import init, { test } from "https://arwinneil.github.io/wasm-router-poc/pkg/wasm_router.js";
 const runWasm = async () => {
     const rustWasm = await init(
-        "/pkg/wasm_router_bg.wasm"
+        "https://arwinneil.github.io/wasm-router-poc/pkg/wasm_router_bg.wasm"
     );
 
     rustWasm.test()

@@ -184,8 +184,8 @@ export function console_log(s) {
 
 /**
 */
-export function test() {
-    wasm.test();
+export function main() {
+    wasm.main();
 }
 
 function handleError(f) {

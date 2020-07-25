@@ -21,8 +21,8 @@ pub fn console_log(s: &str) {
 }
 
 #[wasm_bindgen]
-pub fn test() {
-    let mut r = router::router::Router::new();
+pub fn main() {
+    let mut r = router::Router::new();
 
     r.add("/faq", handle_faq);
     r.add("/about", handle_about);

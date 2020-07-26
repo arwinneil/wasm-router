@@ -8,24 +8,31 @@ Playground for a WebAssembly frontend router written in Rust, live [here](https:
 - "history" style router
 - Rust function path handlers
 
-## Usage
+## Example Usage
 ```rust
+#[wasm_bindgen]
 pub fn main() {
     let mut r = router::Router::new();
-    
-    r.add("/", handle_root);
-    r.add("/about", handle_about);
 
+    r.add("/faq", update_page);
+    r.add("/about", update_page);
+    r.add("/", update_page);
+    r.init();
     r.load_page();
 }
 
-pub fn handle_root(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
+pub fn update_page(s: &str) {
+    web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("path")
+        .unwrap()
+        .dyn_ref::<HtmlElement>()
+        .expect("#path should be an `HtmlElement`")
+        .set_inner_html(s);
 }
 
-pub fn handle_about(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
-}
 ```
 
 ## Building

@@ -34,7 +34,8 @@ features = [
   'Document',
   'Location',
   'Element',
-  'HtmlElement'
+  'HtmlElement',
+  'History'
 ]
 
 [dev-dependencies]

@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::HtmlElement;
 
 #[wasm_bindgen]
 extern "C" {
@@ -21,16 +20,31 @@ impl Router {
     }
 
     pub fn init(&self) {
-        let callback = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
-            let l = web_sys::window().unwrap().location().hash().unwrap();
-            log(l.as_str());
+        let routes: Vec<(String, fn(s: &str))> = self.routes.clone();
+
+        let handle_hash = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
+            // let current_path = Self::get_fragment();
+
+            let l = web_sys::window().unwrap().location();
+            let l: String = l.hash().unwrap().chars().skip(1).collect();
+            log(&["hash handle : ", l.as_str()].concat());
+
+            let h = web_sys::window().unwrap().history().unwrap();
+            h.push_state_with_url(&JsValue::NULL, "", Some(l.as_str()));
+
+            if routes.iter().any(|r| r.0 == l) {
+                let index = routes.iter().position(|r| r.0 == l).unwrap();
+                routes[index].1(routes[index].0.as_str());
+            } else {
+                log("hit nothing");
+            }
         }) as Box<dyn Fn(_)>);
 
         web_sys::window()
             .unwrap()
-            .set_onhashchange(Some(callback.as_ref().unchecked_ref()));
+            .set_onhashchange(Some(handle_hash.as_ref().unchecked_ref()));
 
-        callback.forget();
+        handle_hash.forget();
     }
 
     pub fn add(&mut self, route: &str, handler: fn(s: &str)) {
@@ -42,19 +56,7 @@ impl Router {
     }
 
     fn get_fragment() -> String {
-        let l = web_sys::window().unwrap().location();
-        // Temporary for Demo
-        web_sys::window()
-            .unwrap()
-            .document()
-            .unwrap()
-            .get_element_by_id("path")
-            .unwrap()
-            .dyn_ref::<HtmlElement>()
-            .expect("#path should be an `HtmlElement`")
-            .set_inner_html(l.pathname().unwrap().as_str());
-
-        return l.pathname().unwrap();
+        return web_sys::window().unwrap().location().pathname().unwrap();
     }
 
     pub fn load_page(&self) {

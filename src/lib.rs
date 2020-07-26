@@ -2,6 +2,7 @@ mod router;
 mod utils;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::HtmlElement;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -25,28 +26,22 @@ pub fn console_log(s: &str) {
 pub fn main() {
     let mut r = router::Router::new();
 
+    r.add("/faq", update_page);
+    r.add("/about", update_page);
+    r.add("/lets/party", update_page);
+    r.add("/", update_page);
     r.init();
-
-    r.add("/faq", handle_faq);
-    r.add("/about", handle_about);
-    r.add("/lets/party", handle_lets_party);
-    r.add("/", handle_root);
-
     r.load_page();
 }
 
-pub fn handle_root(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
-}
-
-pub fn handle_about(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
-}
-
-pub fn handle_faq(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
-}
-
-pub fn handle_lets_party(s: &str) {
-    console_log(&["Hit handler for ", s, " route"].concat());
+pub fn update_page(s: &str) {
+    web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("path")
+        .unwrap()
+        .dyn_ref::<HtmlElement>()
+        .expect("#path should be an `HtmlElement`")
+        .set_inner_html(s);
 }

@@ -1,6 +1,7 @@
 mod router;
 mod utils;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -23,6 +24,8 @@ pub fn console_log(s: &str) {
 #[wasm_bindgen]
 pub fn main() {
     let mut r = router::Router::new();
+
+    r.init();
 
     r.add("/faq", handle_faq);
     r.add("/about", handle_about);

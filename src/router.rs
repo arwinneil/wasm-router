@@ -1,5 +1,15 @@
+use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlElement;
+
+#[wasm_bindgen]
+extern "C" {
+    fn alert(s: &str);
+
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+
+}
 
 pub struct Router {
     routes: Vec<(String, fn(s: &str))>,
@@ -8,6 +18,19 @@ pub struct Router {
 impl Router {
     pub fn new() -> Router {
         Router { routes: Vec::new() }
+    }
+
+    pub fn init(&self) {
+        let callback = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
+            let l = web_sys::window().unwrap().location().hash().unwrap();
+            log(l.as_str());
+        }) as Box<dyn Fn(_)>);
+
+        web_sys::window()
+            .unwrap()
+            .set_onhashchange(Some(callback.as_ref().unchecked_ref()));
+
+        callback.forget();
     }
 
     pub fn add(&mut self, route: &str, handler: fn(s: &str)) {
@@ -45,4 +68,5 @@ impl Router {
                 .unwrap();
             self.routes[index].1(self.routes[index].0.as_str());
         }
-    }}
+    }
+}

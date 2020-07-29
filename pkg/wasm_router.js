@@ -266,10 +266,10 @@ async function init(input) {
     }
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbindgen_cb_forget = function(arg0) {
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+    imports.wbg.__wbindgen_cb_forget = function(arg0) {
         takeObject(arg0);
     };
     imports.wbg.__wbg_log_a5476c794dc244ff = function(arg0, arg1) {
@@ -308,12 +308,15 @@ async function init(input) {
     imports.wbg.__wbg_setonhashchange_364f69c16dafc1ef = function(arg0, arg1) {
         getObject(arg0).onhashchange = getObject(arg1);
     };
+    imports.wbg.__wbg_setonpopstate_d6e67b7ef4746e5d = function(arg0, arg1) {
+        getObject(arg0).onpopstate = getObject(arg1);
+    };
     imports.wbg.__wbg_getElementById_91a4ec8b3b9b3b5c = function(arg0, arg1, arg2) {
         var ret = getObject(arg0).getElementById(getStringFromWasm0(arg1, arg2));
         return isLikeNone(ret) ? 0 : addHeapObject(ret);
     };
-    imports.wbg.__wbg_pushState_ed2ccf7e57603016 = handleError(function(arg0, arg1, arg2, arg3, arg4, arg5) {
-        getObject(arg0).pushState(getObject(arg1), getStringFromWasm0(arg2, arg3), arg4 === 0 ? undefined : getStringFromWasm0(arg4, arg5));
+    imports.wbg.__wbg_replaceState_cece41439da2e7c8 = handleError(function(arg0, arg1, arg2, arg3, arg4, arg5) {
+        getObject(arg0).replaceState(getObject(arg1), getStringFromWasm0(arg2, arg3), arg4 === 0 ? undefined : getStringFromWasm0(arg4, arg5));
     });
     imports.wbg.__wbg_instanceof_HtmlElement_eef3089893417f6a = function(arg0) {
         var ret = getObject(arg0) instanceof HTMLElement;
@@ -364,8 +367,8 @@ async function init(input) {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper36 = function(arg0, arg1, arg2) {
-        var ret = makeClosure(arg0, arg1, 10, __wbg_adapter_14);
+    imports.wbg.__wbindgen_closure_wrapper50 = function(arg0, arg1, arg2) {
+        var ret = makeClosure(arg0, arg1, 13, __wbg_adapter_14);
         return addHeapObject(ret);
     };
 

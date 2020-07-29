@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::Window;
 
 #[wasm_bindgen]
 extern "C" {
@@ -20,23 +21,28 @@ impl Router {
     }
 
     pub fn init(&self) {
+        //Route initial URL
+        Self::route(self.routes.clone(), Self::get_fragment());
+
         let routes: Vec<(String, fn(s: &str))> = self.routes.clone();
 
         //Hash routing forward in history and URL rewrite
         let handle_hash = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
-            let l = web_sys::window().unwrap().location();
-            let l: String = l.hash().unwrap().chars().skip(1).collect();
+            let l: String = web_sys::window()
+                .unwrap()
+                .location()
+                .hash()
+                .unwrap()
+                .chars()
+                .skip(1)
+                .collect();
+
             log(&["hash handle : ", l.as_str()].concat());
 
             let h = web_sys::window().unwrap().history().unwrap();
             h.replace_state_with_url(&JsValue::NULL, "", Some(l.as_str()));
 
-            if routes.iter().any(|r| r.0 == l) {
-                let index = routes.iter().position(|r| r.0 == l).unwrap();
-                routes[index].1(routes[index].0.as_str());
-            } else {
-                log("hit nothing");
-            }
+            Self::route(routes.clone(), l)
         }) as Box<dyn Fn(_)>);
 
         web_sys::window()
@@ -66,12 +72,7 @@ impl Router {
 
             log(&["pop handle : ", l.as_str()].concat());
 
-            if routes.iter().any(|r| r.0 == l) {
-                let index = routes.iter().position(|r| r.0 == l).unwrap();
-                routes[index].1(routes[index].0.as_str());
-            } else {
-                log("hit nothing");
-            }
+            Self::route(routes.clone(), l)
         }) as Box<dyn Fn(_)>);
 
         web_sys::window()
@@ -93,16 +94,10 @@ impl Router {
         return web_sys::window().unwrap().location().pathname().unwrap();
     }
 
-    pub fn load_page(&self) {
-        let current_path = Self::get_fragment();
-
-        if self.routes.iter().any(|r| r.0 == current_path) {
-            let index = self
-                .routes
-                .iter()
-                .position(|r| r.0 == current_path)
-                .unwrap();
-            self.routes[index].1(self.routes[index].0.as_str());
+    fn route(routes: Vec<(String, fn(s: &str))>, destination: String) {
+        if routes.iter().any(|r| r.0 == destination) {
+            let index = routes.iter().position(|r| r.0 == destination).unwrap();
+            routes[index].1(routes[index].0.as_str());
         }
     }
 }

@@ -31,7 +31,6 @@ pub fn main() {
     r.add("/lets/party", update_page);
     r.add("/", update_page);
     r.init();
-    r.load_page();
 }
 
 pub fn update_page(s: &str) {

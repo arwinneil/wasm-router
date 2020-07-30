@@ -1,8 +1,9 @@
+mod demo_data;
 mod router;
 mod utils;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::HtmlElement;
+use web_sys::{Element, HtmlElement};
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -31,10 +32,13 @@ pub fn main() {
     r.add("/about", update_page);
     r.add("/lets/party", update_page);
     r.add("404", not_found);
+    r.add_hook("on_loaded", loaded);
     r.init();
 }
 
 pub fn update_page(s: &str) {
+    let data = demo_data::DemoData::new();
+
     web_sys::window()
         .unwrap()
         .document()
@@ -48,31 +52,12 @@ pub fn update_page(s: &str) {
     let content: String;
 
     match s {
+        "/" => content= data.home_content,
         "/about" => content = "Welcome".to_string(),
         "/lets/party" => {
             content = r#"<iframe src="https://giphy.com/embed/FYx64DDl2ElWw" width="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/trippy-party-weed-FYx64DDl2ElWw">via GIPHY</a></p>"#.to_string()
         },
-        "/faq" =>{
-            content="<h2>Frequently Asked Questions</h2>
-            <details>
-                <summary> You know why you never see elephants hiding up in trees?</summary>
-                <p>Because they’re really good at it.</p>
-            </details>
-            <details>
-                <summary>Why aren’t koalas actual bears?</summary>
-                <p>The don’t meet the koalafications.</p>
-            </details>
-            <details>
-                <summary>What do you call bears with no ears?</summary>
-                <p>B</p>
-            </details>
-            <details>
-                <p><summary>Because it scares the crap out of their dogs.</summary></p>
-            </details>
-            
-            ".to_string()
-        }
-
+        "/faq" => content = data.faq_content,
         _ => content = s.to_owned(),
     }
 
@@ -107,4 +92,17 @@ pub fn not_found(s: &str) {
         .dyn_ref::<HtmlElement>()
         .expect("#path should be an `HtmlElement`")
         .set_inner_html("");
+}
+
+pub fn loaded() {
+    web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("body")
+        .unwrap()
+        .dyn_ref::<Element>()
+        .unwrap()
+        .class_list()
+        .remove_1("loading");
 }

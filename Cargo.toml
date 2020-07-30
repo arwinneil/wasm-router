@@ -35,7 +35,8 @@ features = [
   'Location',
   'Element',
   'HtmlElement',
-  'History'
+  'History',
+  'DomTokenList'
 ]
 
 [dev-dependencies]

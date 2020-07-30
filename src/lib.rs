@@ -52,11 +52,9 @@ pub fn update_page(s: &str) {
     let content: String;
 
     match s {
-        "/" => content= data.home_content,
-        "/about" => content = "Welcome".to_string(),
-        "/lets/party" => {
-            content = r#"<iframe src="https://giphy.com/embed/FYx64DDl2ElWw" width="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/trippy-party-weed-FYx64DDl2ElWw">via GIPHY</a></p>"#.to_string()
-        },
+        "/" => content = data.home_content,
+        "/about" => content = data.about_content,
+        "/lets/party" => content = data.lets_party_content,
         "/faq" => content = data.faq_content,
         _ => content = s.to_owned(),
     }

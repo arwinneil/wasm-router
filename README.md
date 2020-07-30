@@ -6,32 +6,24 @@ Playground for a WebAssembly frontend router written in Rust, live [here](https:
 ## Current Status ⚒
 
 - Hybrid router combinng `hash` & `history` style routing modes, delivering clean URLs without the need to reload page
-- Rust function path handlers
+- DOM updated using Rust function pointers & [web-sys](https://crates.io/crates/web-sys)
+- 404 Page if route does not exist
+- Supports hooks at different stages of the routing lifecycle (WIP)
 
 ## Example Usage
 ```rust
-#[wasm_bindgen]
-pub fn main() {
+#[wasm_bindgen]pub fn main() {
     let mut r = router::Router::new();
 
-    r.add("/faq", update_page);
-    r.add("/about", update_page);
-    r.add("/", update_page);
+    r.add("/", update_home);
+    r.add("/about", update_about);
+    r.add_hook("on_loaded", loaded);
     r.init();
-    r.load_page();
 }
 
-pub fn update_page(s: &str) {
-    web_sys::window()
-        .unwrap()
-        .document()
-        .unwrap()
-        .get_element_by_id("path")
-        .unwrap()
-        .dyn_ref::<HtmlElement>()
-        .expect("#path should be an `HtmlElement`")
-        .set_inner_html(s);
-}
+pub fn update_home(s: &str) { /* DOM Manipulation */}
+pub fn update_about(s: &str) { /* DOM Manipulation */}
+pub fn loaded() { /* DOM Manipulation */}
 
 ```
 

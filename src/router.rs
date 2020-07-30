@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::Window;
 
 #[wasm_bindgen]
 extern "C" {
@@ -98,6 +97,13 @@ impl Router {
         if routes.iter().any(|r| r.0 == destination) {
             let index = routes.iter().position(|r| r.0 == destination).unwrap();
             routes[index].1(routes[index].0.as_str());
+        } else {
+            if routes.iter().any(|r| r.0 == "404") {
+                let index = routes.iter().position(|r| r.0 == "404").unwrap();
+                routes[index].1(routes[index].0.as_str());
+            } else {
+                log("Page not found!");
+            }
         }
     }
 }

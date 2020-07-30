@@ -10,35 +10,82 @@
     <script type="module" src="/index.js"></script>
 
     <title>WASM Router Demo</title>
+
+    <style>
+        .loading::before,
+        .loading::after {
+            content: "";
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .loading::before {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .loaded {
+            opacity: 0;
+        }
+
+        .loading::after {
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            margin: -30px 0 0 -30px;
+            border-radius: 50%;
+            opacity: 0.4;
+            background: rgb(122, 19, 239);
+            animation: loaderAnim 0.7s linear infinite alternate forwards;
+        }
+
+
+        @keyframes loaderAnim {
+            to {
+                opacity: 1;
+                transform: scale3d(0.5, 0.5, 1);
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body id="body" class="loading">
     <header>
         <nav>
-            <a href="/">
-                <h1>WASM Router Demo</h1>
+            <a href="#/">
+                <h2>WASM Router</h2>
             </a>
             <ul>
                 <li><a href="#/about">About</a></li>
                 <li><a href="#/faq">FAQ</a></li>
                 <li><a href="#/lets/party">🎉</a></li>
             </ul>
-
         </nav>
-        <h1>Navigate to any sub path!</u></h1>
-        <h1>Current page is <mark id="path"></mark> </h1>
 
-        <p><sup>Tip</sup>Check console output for existing path handlers for navbar links</p>
-        <br>
+        <h2>Playground for a WebAssembly frontend router written in Rust 🦀</u></h1>
+            <h1>Current page is <mark id="path"></mark> </h1>
+
     </header>
+
+    <main id="content">
+    </main>
 
     <footer>
         <hr>
         <p>
             <small>
+                Built with <a href="https://www.rust-lang.org/">Rust↗</a> , <a
+                    href="https://rustwasm.github.io/">rustwasm↗</a> & <a
+                    href="https://andybrewer.github.io/mvp/">MVP.css↗</a>
+                <br>
                 Made by <a href="https://twitter.com/arwinneil">@arwinneil ↗</a>
                 <br>
-                <a href="https://github.com/arwinneil/wasm-router-poc">https://github.com/arwinneil/wasm-router-poc↗</a>
+                Source code : <a
+                    href="https://github.com/arwinneil/wasm-router-poc">github.com/arwinneil/wasm-router↗</a>
             </small>
         </p>
     </footer>

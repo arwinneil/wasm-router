@@ -12,11 +12,15 @@ extern "C" {
 
 pub struct Router {
     routes: Vec<(String, fn(s: &str))>,
+    hooks: Vec<(String, fn())>, //To improve implementation
 }
 
 impl Router {
     pub fn new() -> Router {
-        Router { routes: Vec::new() }
+        Router {
+            routes: Vec::new(),
+            hooks: Vec::new(),
+        }
     }
 
     pub fn init(&self) {
@@ -79,6 +83,8 @@ impl Router {
             .set_onpopstate(Some(handle_pop.as_ref().unchecked_ref()));
 
         handle_pop.forget();
+
+        Self::run_hook(self.hooks.clone(), "on_loaded");
     }
 
     pub fn add(&mut self, route: &str, handler: fn(s: &str)) {
@@ -89,8 +95,20 @@ impl Router {
         self.routes.retain(|r| r.0 != route)
     }
 
+    pub fn add_hook(&mut self, hook: &str, handler: fn()) {
+        self.hooks.push((String::from(hook), handler));
+    }
+
     fn get_fragment() -> String {
         return web_sys::window().unwrap().location().pathname().unwrap();
+    }
+
+    fn run_hook(hooks: Vec<(String, fn())>, hook: &str) {
+        log(hook);
+        if hooks.iter().any(|r| r.0 == hook) {
+            let index = hooks.iter().position(|r| r.0 == hook).unwrap();
+            hooks[index].1();
+        }
     }
 
     fn route(routes: Vec<(String, fn(s: &str))>, destination: String) {

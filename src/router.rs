@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -11,23 +12,23 @@ extern "C" {
 }
 
 pub struct Router {
-    routes: Vec<(String, fn(s: &str))>,
-    hooks: Vec<(String, fn())>, //To improve implementation
+    routes: HashMap<String, fn(s: &str)>,
+    hooks: HashMap<String, fn()>, //To improve implementation
 }
 
 impl Router {
     pub fn new() -> Router {
         Router {
-            routes: Vec::new(),
-            hooks: Vec::new(),
+            routes: HashMap::new(),
+            hooks: HashMap::new(),
         }
     }
 
     pub fn init(&self) {
         //Route initial URL
-        Self::route(self.routes.clone(), Self::get_fragment());
+        Self::route(self.routes.clone(), Self::get_fragment().as_str());
 
-        let routes: Vec<(String, fn(s: &str))> = self.routes.clone();
+        let routes: HashMap<String, fn(s: &str)> = self.routes.clone();
 
         //Hash routing forward in history and URL rewrite
         let handle_hash = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
@@ -45,7 +46,7 @@ impl Router {
             let h = web_sys::window().unwrap().history().unwrap();
             h.replace_state_with_url(&JsValue::NULL, "", Some(l.as_str()));
 
-            Self::route(routes.clone(), l)
+            Self::route(routes.clone(), l.as_str())
         }) as Box<dyn Fn(_)>);
 
         web_sys::window()
@@ -54,7 +55,7 @@ impl Router {
 
         handle_hash.forget();
 
-        let routes: Vec<(String, fn(s: &str))> = self.routes.clone();
+        let routes: HashMap<String, fn(s: &str)> = self.routes.clone();
 
         //Routing for navigating in history and escaping hash routes
         let handle_pop = Closure::wrap(Box::new(move |_evt: web_sys::Event| {
@@ -75,7 +76,7 @@ impl Router {
 
             log(&["pop handle : ", l.as_str()].concat());
 
-            Self::route(routes.clone(), l)
+            Self::route(routes.clone(), l.as_str())
         }) as Box<dyn Fn(_)>);
 
         web_sys::window()
@@ -88,40 +89,39 @@ impl Router {
     }
 
     pub fn add(&mut self, route: &str, handler: fn(s: &str)) {
-        self.routes.push((String::from(route), handler));
+        self.routes.insert(String::from(route), handler);
     }
 
     pub fn remove(&mut self, route: &str) {
-        self.routes.retain(|r| r.0 != route)
+        self.routes.remove(route);
     }
 
     pub fn add_hook(&mut self, hook: &str, handler: fn()) {
-        self.hooks.push((String::from(hook), handler));
+        self.hooks.insert(String::from(hook), handler);
     }
 
     fn get_fragment() -> String {
         return web_sys::window().unwrap().location().pathname().unwrap();
     }
 
-    fn run_hook(hooks: Vec<(String, fn())>, hook: &str) {
+    fn run_hook(hooks: HashMap<String, fn()>, hook: &str) {
         log(hook);
-        if hooks.iter().any(|r| r.0 == hook) {
-            let index = hooks.iter().position(|r| r.0 == hook).unwrap();
-            hooks[index].1();
+
+        match hooks.get(hook) {
+            Some(handler) => handler(),
+            None => (),
         }
     }
 
-    fn route(routes: Vec<(String, fn(s: &str))>, destination: String) {
-        if routes.iter().any(|r| r.0 == destination) {
-            let index = routes.iter().position(|r| r.0 == destination).unwrap();
-            routes[index].1(routes[index].0.as_str());
-        } else {
-            if routes.iter().any(|r| r.0 == "404") {
-                let index = routes.iter().position(|r| r.0 == "404").unwrap();
-                routes[index].1(routes[index].0.as_str());
-            } else {
-                log("Page not found!");
-            }
+    fn route(routes: HashMap<String, fn(&str)>, destination: &str) {
+        match routes.get(destination) {
+            Some(route_handler) => route_handler(destination),
+            None => match routes.get("404") {
+                Some(route_handler) => route_handler(destination),
+                None => {
+                    log("Page not found!");
+                }
+            },
         }
     }
 }

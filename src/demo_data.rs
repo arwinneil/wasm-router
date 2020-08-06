@@ -19,7 +19,7 @@ impl DemoData {
                 <aside>
                     <img alt="Lifecycle Hooks" src="./img/hooks.svg" height="200px">
                 <h3>Lifecycle Hooks  <sup>In Progress</sup></h3>
-                    <p>Inject code your at specific stages of routing to a page. This page's uses an <code>on_loaded</code> hook to hide the loading animation when the page on initial load.
+                    <p>Inject code your at specific stages of routing to a page. This page's uses an <code>on_loaded</code> hook to hide the loading animation on initial load.
                     </p>
                 </aside>
                 <aside>

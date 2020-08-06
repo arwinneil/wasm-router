@@ -14,8 +14,7 @@ impl DemoData {
                 <aside>
                     <img alt="HTML only" src="./img/routing.svg" height="200px" >
                     <h3>Routing with clean URLs</h3>
-                    <p>without page reload, and with full brower history navigation! Non existant routes can also be handled to display an error message. Try it out : </p>
-                    <p><a href="#thisisatest"><em>Non-existant Page</em></a></p>
+                    <p>without page reload, and with full brower history navigation! Non existant routes can also be handled to display an error message. Try it out on this  <a href="#thisisatest"> non existant page ➡ </a> or any random URL.</p>
                 </aside>
                 <aside>
                     <img alt="Lifecycle Hooks" src="./img/hooks.svg" height="200px">
@@ -26,9 +25,8 @@ impl DemoData {
                 <aside>
                     <img alt="Example code" src="./img/example.svg" height="200px">
                     <h3>Feedback</h3>
-                    <p>Still a work in progress, feel free to play and break this demo. I'm new to Rust the inner workings of the Browser API. Feedback welcome on the GitHub repository. Be sure to leave a ⭐ if you're visiting.
+                    <p>Still a work in progress, feel free to play and break this demo. I'm new to Rust the inner workings of the Browser API. Feedback welcome on <a href="https://github.com/arwinneil/wasm-router">GitHub↗</a>. Be sure to leave a ⭐ if you're visiting.
                     </p>
-                <p><a href="https://github.com/arwinneil/wasm-router"><em>GitHub Repository↗</em></a></p>
 
                 </section>"##.to_string(),
 
@@ -48,7 +46,7 @@ impl DemoData {
                 </details>
                 <details>
                     <summary>Why dont blind people skydive?</summary>
-                    <p><summary>Because it scares the crap out of their dogs.</summary></p>
+                    <p>Because it scares the crap out of their dogs.</p>
                 </details>
                 ".to_string(),
 
